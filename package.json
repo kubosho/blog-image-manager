@@ -10,7 +10,7 @@
     "start": "PORT=45537 next start",
     "lint": "eslint .",
     "test": "jest",
-    "storybook": "start-storybook -p 45538"
+    "storybook": "storybook dev -p 45538"
   },
   "dependencies": {
     "@ark-ui/react": "5.27.1",
@@ -36,7 +36,6 @@
     "@o2project/design-system": "1.1.0",
     "@storybook/addon-actions": "9.0.8",
     "@storybook/addon-links": "10.0.2",
-    "@storybook/addon-postcss": "2.0.0",
     "@storybook/builder-vite": "10.0.2",
     "@storybook/nextjs": "10.0.7",
     "@storybook/testing-library": "0.2.1",
