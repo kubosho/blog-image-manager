@@ -1,0 +1,1 @@
+export { DummyImage } from './DummyImage';
