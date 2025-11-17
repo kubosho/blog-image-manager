@@ -1,6 +1,6 @@
 import preview from '../../../../../.storybook/preview';
 
-import { DummyImage } from '../DummyImage';
+import { DummyImage } from '.';
 
 const meta = preview.meta({
   component: DummyImage,
