@@ -7,7 +7,7 @@ type Props = {
 export default function RootLayout({ children }: Props): React.JSX.Element {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="min-h-dvh">{children}</body>
     </html>
   );
 }
