@@ -4,10 +4,18 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { objectActions } from './object-actions';
 import { s3ClientInstance } from './s3-client-instance';
 
-async function fetchFileKeys(params: { limit: number }): Promise<string[]> {
+async function fetchFileKeys(params: {
+  limit: number;
+  nextToken?: string;
+}): Promise<{ keys: string[]; nextToken?: string }> {
   try {
-    const response = await objectActions.readObjects({ limit: params.limit });
-    return response.Contents?.flatMap((item) => (item.Key && !item.Key.endsWith('/') ? [item.Key] : [])) ?? [];
+    const response = await objectActions.readObjects({ limit: params.limit, startingAfter: params.nextToken });
+    const keys = response.Contents?.flatMap((item) => (item.Key && !item.Key.endsWith('/') ? [item.Key] : [])) ?? [];
+
+    return {
+      keys,
+      nextToken: response.NextContinuationToken,
+    };
   } catch (error) {
     if (error instanceof S3ServiceException) {
       throw new Error(`Failed to fetch file keys: ${error.message}`);
@@ -17,12 +25,16 @@ async function fetchFileKeys(params: { limit: number }): Promise<string[]> {
   }
 }
 
-export async function fetchImageUrls(params: { limit: number; secondsToExpire: number }): Promise<string[]> {
+export async function fetchImageUrls(params: {
+  limit: number;
+  nextToken?: string;
+  secondsToExpire: number;
+}): Promise<{ urls: string[]; nextToken?: string | null }> {
   try {
     const client = s3ClientInstance();
-    const objectKeys = await fetchFileKeys({ limit: params.limit });
+    const { keys, nextToken } = await fetchFileKeys({ limit: params.limit, nextToken: params.nextToken });
     const urls = await Promise.all(
-      objectKeys.map((key) => {
+      keys.map((key) => {
         const command = new GetObjectCommand({
           Bucket: process.env.AWS_S3_BUCKET_NAME,
           Key: key,
@@ -32,9 +44,12 @@ export async function fetchImageUrls(params: { limit: number; secondsToExpire: n
       }),
     );
 
-    return urls;
+    return {
+      urls,
+      nextToken,
+    };
   } catch (error) {
     console.error(error);
-    return [];
+    return { urls: [], nextToken: null };
   }
 }

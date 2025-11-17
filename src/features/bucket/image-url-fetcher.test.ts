@@ -37,11 +37,11 @@ describe('fetchImageUrls', () => {
     const result = await fetchImageUrls({ limit: 3, secondsToExpire: 600 });
 
     // Assert
-    expect(result).toHaveLength(2);
-    expect(result[0]).toMatch(
+    expect(result.urls).toHaveLength(2);
+    expect(result.urls[0]).toMatch(
       /^https:\/\/test-bucket\.s3\.[^/]+\.amazonaws\.com\/image-a\.png\?.*X-Amz-Algorithm=.*&.*X-Amz-Signature=/,
     );
-    expect(result[1]).toMatch(
+    expect(result.urls[1]).toMatch(
       /^https:\/\/test-bucket\.s3\.[^/]+\.amazonaws\.com\/image-b\.jpg\?.*X-Amz-Algorithm=.*&.*X-Amz-Signature=/,
     );
   });
@@ -58,7 +58,7 @@ describe('fetchImageUrls', () => {
     const result = await fetchImageUrls({ limit: 2, secondsToExpire: 120 });
 
     // Assert
-    expect(result).toEqual([]);
+    expect(result.urls).toEqual([]);
   });
 
   it('returns an empty array when an unexpected error occurs', async () => {
@@ -71,6 +71,6 @@ describe('fetchImageUrls', () => {
     const result = await fetchImageUrls({ limit: 5, secondsToExpire: 300 });
 
     // Assert
-    expect(result).toEqual([]);
+    expect(result.urls).toEqual([]);
   });
 });
