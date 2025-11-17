@@ -13,6 +13,8 @@ export const providers: Provider[] = [
   },
 ];
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+const config = {
   providers: [Google],
-});
+}
+
+export const { auth, handlers, signIn, signOut } = NextAuth(config);
