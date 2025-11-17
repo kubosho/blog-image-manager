@@ -3,8 +3,8 @@ import {
   type DeleteObjectCommandOutput,
   GetObjectCommand,
   type GetObjectCommandOutput,
-  type ListObjectsCommandOutput,
   ListObjectsV2Command,
+  type ListObjectsV2CommandOutput,
   PutObjectCommand,
   type PutObjectCommandOutput,
   S3ServiceException,
@@ -15,7 +15,7 @@ import { s3ClientInstance } from './s3-client-instance';
 interface ObjectActions {
   upsertObject: (params: { filename: string; body: Uint8Array }) => Promise<PutObjectCommandOutput>;
   readObject: (params: { filename: string }) => Promise<GetObjectCommandOutput>;
-  readObjects: (params: { limit: number; startingAfter?: string }) => Promise<ListObjectsCommandOutput>;
+  readObjects: (params: { limit: number; startingAfter?: string }) => Promise<ListObjectsV2CommandOutput>;
   deleteObject: (params: { filename: string }) => Promise<DeleteObjectCommandOutput>;
 }
 
@@ -65,7 +65,7 @@ class S3ObjectActions implements ObjectActions {
     }
   }
 
-  async readObjects(params: { limit: number; startingAfter?: string }): Promise<ListObjectsCommandOutput> {
+  async readObjects(params: { limit: number; startingAfter?: string }): Promise<ListObjectsV2CommandOutput> {
     const { limit, startingAfter } = params;
     const client = s3ClientInstance();
 
