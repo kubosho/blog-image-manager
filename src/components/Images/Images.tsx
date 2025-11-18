@@ -4,7 +4,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../features/auth/session-expired-time';
 import { useIntersectionObserver } from '../../hooks/use-intersection-observer';
-import { Image } from '../Image';
 
 type Props = {
   imageUrls: string[];
@@ -99,10 +98,11 @@ export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
       <p className="sr-only" aria-live="polite">
         {isFetching ? 'Loading images...' : `${fetchedImagesCountRef.current} images loaded.`}
       </p>
-      <ul className="grid grid-cols-4 gap-6">
+      <ul className="grid grid-cols-4 gap-6 px-6 py-6">
         {imageData.map(({ name, url }, index) => (
           <li key={index}>
-            <Image imageName={name} imageUrl={url} />
+            <img src={url} alt="" width="auto" height="300" className="object-contain justify-self-center h-75 shadow-md" />
+            <p className="mt-1">{name}</p>
           </li>
         ))}
       </ul>
