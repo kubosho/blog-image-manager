@@ -1,7 +1,9 @@
 'use client';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../features/auth/session-expired-time';
+import { useIntersectionObserver } from '../../hooks/use-intersection-observer';
 import { Image } from '../Image';
 
 type Props = {
@@ -10,7 +12,11 @@ type Props = {
 };
 
 export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
-  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+  const previousImagesCountRef = useRef(0);
+  const fetchedImagesCountRef = useRef(0);
+
+  // Fetch images with infinite scrolling
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetched } = useInfiniteQuery({
     queryKey: ['images'],
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({
@@ -50,6 +56,19 @@ export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
     staleTime: 60 * 1000,
   });
 
+  // Set up intersection observer to load more images when scrolling
+  const { ref } = useIntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetching) {
+        fetchNextPage();
+      }
+    },
+    {
+      rootMargin: '100px',
+      threshold: 0,
+    },
+  );
+
   const allImageUrls = data?.pages.flatMap((page) => page.urls) ?? imageUrls;
   const imageData = allImageUrls.map((imageUrl) => {
     const url = new URL(imageUrl);
@@ -60,9 +79,26 @@ export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
       url: imageUrl,
     };
   });
+  const imagesCount = imageData.length;
+
+  if (isFetching) {
+    fetchedImagesCountRef.current = 0;
+  }
+
+  if (previousImagesCountRef.current === 0) {
+    // Initial load
+    previousImagesCountRef.current = imagesCount;
+  } else if (!isFetching && previousImagesCountRef.current !== imagesCount) {
+    // After fetching new images
+    fetchedImagesCountRef.current = imagesCount - previousImagesCountRef.current;
+    previousImagesCountRef.current = imagesCount;
+  }
 
   return (
     <>
+      <p className="sr-only" aria-live="polite">
+        {isFetching ? 'Loading images...' : `${fetchedImagesCountRef.current} images loaded.`}
+      </p>
       <ul className="grid grid-cols-4 gap-6">
         {imageData.map(({ name, url }, index) => (
           <li key={index}>
@@ -71,9 +107,9 @@ export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
         ))}
       </ul>
       {hasNextPage && (
-        <button onClick={() => fetchNextPage()} disabled={isFetching}>
-          {isFetching ? 'Loading...' : 'Load more'}
-        </button>
+        <p ref={ref} className="text-center">
+          {isFetching ? 'Loading images...' : 'Scroll down to load more images'}
+        </p>
       )}
     </>
   );
