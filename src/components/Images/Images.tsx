@@ -16,7 +16,7 @@ export function Images({ imageUrls, nextToken }: Props): React.JSX.Element {
   const fetchedImagesCountRef = useRef(0);
 
   // Fetch images with infinite scrolling
-  const { data, fetchNextPage, hasNextPage, isFetching, isFetched } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['images'],
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({
