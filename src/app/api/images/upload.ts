@@ -1,67 +1,85 @@
 import { NextResponse } from 'next/server';
 
+import type {
+  UpsertImagesErrorResponseObject,
+  UpsertImagesSuccessResponseObject,
+} from '../../../features/album/types/upsert-images';
 import { objectActions } from '../../../features/bucket/object-actions';
 
-export async function POST(request: Request): Promise<
-  | NextResponse<{
-      message: string;
-      uploaded: never[];
-    }>
-  | NextResponse<{
-      message: null;
-      uploaded: string[];
-    }>
-> {
-  const formData = await request.formData();
-  const files = formData.getAll('files') as File[];
+// Don't want to use let.
+const imageData = new WeakMap<Request, Uint8Array>();
 
-  if (files.length === 0) {
+/**
+ * Handles image upload.
+ *
+ * Q. Why not use FormData?
+ * A. We avoid FormData to prevent forcing the client to generate it,
+ *    allowing for pure JSON exchanges.
+ */
+export async function POST(
+  request: Request,
+): Promise<NextResponse<UpsertImagesSuccessResponseObject> | NextResponse<UpsertImagesErrorResponseObject>> {
+  const contentType = request.headers.get('content-type');
+  if (contentType == null) {
     return NextResponse.json(
       {
-        message: 'No files provided.',
-        uploaded: [],
+        message: 'Content-Type is missing.',
+      },
+      { status: 400 },
+    );
+  }
+  if (!contentType.startsWith('image/')) {
+    return NextResponse.json(
+      {
+        message: 'Invalid Content-Type. Only image file is allowed.',
+      },
+      { status: 415 },
+    );
+  }
+
+  const buffer = await request.arrayBuffer().catch(() => new ArrayBuffer(0));
+  if (buffer.byteLength === 0) {
+    return NextResponse.json(
+      {
+        message: 'Uploaded file is empty.',
       },
       { status: 400 },
     );
   }
 
+  imageData.set(request, new Uint8Array(buffer));
+
+  const { searchParams } = new URL(request.url);
+  const specifiedFilename = searchParams.get('filename');
+  const imageFormat = contentType.split('/')[1];
+  const filename = specifiedFilename ?? `${crypto.randomUUID()}.${imageFormat}`;
+
   try {
-    const fileEntries = await Promise.all(
-      files.map(async (file) => {
-        const key = `${crypto.randomUUID()}-${file.name}`;
-        const value = await file.arrayBuffer();
-
-        return {
-          key,
-          value: new Uint8Array(value),
-        };
-      }),
-    );
-
-    const uploads = await Promise.all(
-      fileEntries.map(async ({ key, value }) => {
-        await objectActions.upsertObject({
-          filename: key,
-          body: value,
-        });
-
-        return key;
-      }),
-    );
+    await objectActions.upsertObject({
+      filename,
+      // Don't consider the absence of a request.
+      body: imageData.get(request)!,
+    });
 
     return NextResponse.json(
       {
-        message: null,
-        uploaded: uploads,
+        imagePath: filename,
       },
-      { status: 201 },
+      { status: 200 },
     );
   } catch (error) {
-    console.error(error);
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          message: `Upload failed: ${error.message}`,
+        },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json(
       {
-        message: 'Upload failed.',
-        uploaded: [],
+        message: 'Upload failed due to an unknown error.',
       },
       { status: 500 },
     );

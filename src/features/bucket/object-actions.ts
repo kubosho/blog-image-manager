@@ -35,8 +35,7 @@ class S3ObjectActions implements ObjectActions {
       return data;
     } catch (error) {
       if (error instanceof S3ServiceException) {
-        console.error('putObject failed', { key: filename, code: error.name, message: error.message });
-        throw error;
+        throw new Error('putObject failed', { cause: error });
       }
 
       throw new Error('Unexpected S3 failure', { cause: error });
