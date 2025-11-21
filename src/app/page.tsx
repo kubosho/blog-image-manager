@@ -1,146 +1,87 @@
-import { useAtom } from "jotai";
-import type { Metadata } from "next";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { ErrorReason, ERROR_REASON } from "../constants/error_reason";
-import { createImageUrl } from "../shared_logic/s3/image_url_creator";
-import { fetchImageUrlList } from "../shared_logic/s3/image_url_fetcher";
-import { Notification } from "../components/Notification";
-import { SiteHeader } from "../components/SiteHeader";
-import { convertImageFileToUint8Array } from "../shared_logic/convert_image_file_to_uint8array";
-import { hasAwsEnv } from "../shared_logic/has_aws_env";
-import { s3ClientInstance } from "../shared_logic/s3/s3_client_creator";
-import { putObject } from "../shared_logic/s3/object_put";
-import { UploadButton } from "../components/UploadButton";
-import { ImageList } from "../components/ImageList";
-import { Error } from "../components/Error";
-import { SignInButton } from "../features/auth/components/SignInButton";
-import { imageListAtom } from "../stores/image_list";
+import { FileUpload } from '@ark-ui/react/file-upload';
+import type { Metadata } from 'next';
+
+import { Error } from '../components/Error';
+import { SiteHeader } from '../components/SiteHeader';
+import { ERROR_REASON, ErrorReason } from '../constants/error_reason';
+import { Images } from '../features/album/components/Images';
+import { ImageUploadButton } from '../features/album/components/ImageUploadButton';
+import { auth } from '../features/auth/auth';
+import { SignInButton } from '../features/auth/components/SignInButton';
+import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../features/auth/session-expired-time';
+import { fetchImageUrls } from '../features/bucket/image-url-fetcher';
+import { TanstackQueryClientProvider } from '../lib/TanstackQueryClientProvider';
 
 type Contents =
   | {
       imageUrls: never[];
+      nextToken: null;
       isError: true;
       errorReason: ErrorReason;
     }
   | {
       imageUrls: string[];
+      nextToken: string | null;
       isError: false;
       errorReason: null;
     };
 
-const SECONDS_TO_EXPIRE = 600;
-
 export const metadata: Metadata = {
-  title: "S3 image uploader",
+  title: 'Blog image manager',
 };
 
 async function getContents(): Promise<Contents> {
-  if (!hasAwsEnv(process.env)) {
+  const result = await fetchImageUrls({ limit: 20, secondsToExpire: SESSION_EXPIRED_TIME_IN_SECONDS });
+  if ('urls' in result) {
     return {
-      imageUrls: [],
-      isError: true,
-      errorReason: ERROR_REASON.NOT_SET_AWS_ENVIRONMENT_VARIABLES,
-    };
-  }
-
-  try {
-    const imageUrls = await fetchImageUrlList(
-      s3ClientInstance(),
-      SECONDS_TO_EXPIRE,
-    );
-
-    return {
-      imageUrls,
+      imageUrls: result.urls,
+      nextToken: result.nextToken ?? null,
       isError: false,
       errorReason: null,
     };
-  } catch (error) {
-    return {
-      imageUrls: [],
-      isError: true,
-      errorReason: ERROR_REASON.GENERAL_ERROR,
-    };
   }
+
+  return {
+    imageUrls: [],
+    nextToken: null,
+    isError: true,
+    errorReason: ERROR_REASON.GENERAL_ERROR,
+  };
 }
 
-export default async function Index(): Promise<React.JSX.Element> {
-  const { imageUrls, isError, errorReason } = await getContents();
-
-  const [imageList, setImageList] = useAtom(imageListAtom);
-  const [isNotificationShown, setIsNotificationShown] = useState(false);
-  const [fileListIterator, setFileListIterator] =
-    useState<IterableIterator<File> | null>(null);
-
-  const onChangeImageUpload = useCallback((event: ChangeEvent) => {
-    const { target } = event;
-
-    if (target instanceof HTMLInputElement) {
-      const fileList = Array.from(target.files ?? []);
-      const fileListIterator = fileList[Symbol.iterator]();
-      setFileListIterator(fileListIterator);
-    }
-  }, []);
-
-  const onClickNotificationCloseButton = useCallback(() => {
-    location.reload();
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsNotificationShown(true);
-    }, SECONDS_TO_EXPIRE * 1000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isError && errorReason == null) {
-      setImageList(imageUrls);
-    }
-  }, [imageUrls, setImageList]);
-
-  useEffect(() => {
-    (async () => {
-      if (fileListIterator === null) {
-        return;
-      }
-
-      for (const file of fileListIterator) {
-        const filename = file.name;
-        const body = await convertImageFileToUint8Array(file);
-        await putObject({ client: s3ClientInstance(), filename, body });
-
-        const imageUrl = await createImageUrl({
-          imagePath: filename,
-          secondsToExpire: SECONDS_TO_EXPIRE,
-        });
-        setImageList((prevState) => [...prevState, imageUrl]);
-      }
-    })();
-  }, [fileListIterator, imageList, setImageList]);
+export default async function IndexPage(): Promise<React.JSX.Element> {
+  const session = await auth();
+  const { imageUrls, nextToken, isError, errorReason } = await getContents();
 
   if (isError) {
     return <Error errorReason={errorReason} />;
   }
 
   return (
-    <>
-      <SiteHeader siteTitle="S3 image uploader" />
-      <SignInButton />
-      <div>
-        <UploadButton onChange={onChangeImageUpload} />
-      </div>
-      <ImageList imageUrls={imageList} />
-      <div className="absolute right-2 bottom-2">
-        <Notification
-          isShown={isNotificationShown}
-          text="Required reload."
-          buttonText="OK"
-          onClickCloseButton={onClickNotificationCloseButton}
-        />
-      </div>
-    </>
+    <div className="grid grid-rows-(--page-grid-row-value) h-dvh">
+      <SiteHeader />
+      <main>
+        {session?.user == null && (
+          <div className="flex items-center justify-center h-full">
+            <div className="inline-flex flex-col border p-6 rounded-2 border-neutral-border">
+              <h2 className="font-bold text-xl">Sign in required</h2>
+              <p className="mt-2">Sign in to display the image.</p>
+              <SignInButton className="flex justify-end mt-6" />
+            </div>
+          </div>
+        )}
+        {session?.user != null && (
+          <TanstackQueryClientProvider>
+            <div className={session?.user == null ? '' : 'grid grid-cols-[auto_1fr] gap-6 px-6 py-6'}>
+              <ImageUploadButton />
+              <FileUpload.Root accept="image/*" maxFiles={5}>
+                <FileUpload.HiddenInput />
+                <Images imageUrls={imageUrls} nextToken={nextToken} />
+              </FileUpload.Root>
+            </div>
+          </TanstackQueryClientProvider>
+        )}
+      </main>
+    </div>
   );
 }
