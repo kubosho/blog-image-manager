@@ -5,6 +5,7 @@ import { useRef } from 'react';
 
 import { useIntersectionObserver } from '../../../../hooks/use-intersection-observer';
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../../auth/session-expired-time';
+import { getImagesQueryKey } from '../../utils/get-images-query-key';
 import { getImagesSuccessResponseSchema } from '../../utils/get-images-schema';
 
 type Props = {
@@ -18,7 +19,7 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
 
   // Fetch images with infinite scrolling
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
-    queryKey: ['images'],
+    queryKey: getImagesQueryKey,
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({
         limit: '20',
