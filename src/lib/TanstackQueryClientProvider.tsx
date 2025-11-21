@@ -5,6 +5,6 @@ import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 
-export function TanstackQueryClientProvider({ children }: { children: ReactNode }) {
+export function TanstackQueryClientProvider({ children }: { children: ReactNode }): React.JSX.Element {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
