@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { useIntersectionObserver } from '../../../../hooks/use-intersection-observer';
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../../auth/session-expired-time';
-import { getImagesSuccessResponseSchema } from '../../types/get-images';
+import { getImagesSuccessResponseSchema } from '../../utils/get-images-schema';
 
 type Props = {
   imageUrls: string[];
