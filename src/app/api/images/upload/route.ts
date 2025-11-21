@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import type {
   UpsertImagesErrorResponseObject,
   UpsertImagesSuccessResponseObject,
-} from '../../../features/album/types/upsert-images';
-import { objectActions } from '../../../features/bucket/object-actions';
+} from '../../../../features/album/types/upsert-images';
+import { objectActions } from '../../../../features/bucket/object-actions';
 
 // Don't want to use let.
 const imageData = new WeakMap<Request, Uint8Array>();
