@@ -15,9 +15,7 @@ export default defineConfig([
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ['.storybook/*.ts'],
-        },
+        projectService: true,
       },
     },
     rules: {
