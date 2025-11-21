@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import type {
   UpsertImagesErrorResponseObject,
@@ -17,7 +17,7 @@ const imageData = new WeakMap<Request, Uint8Array>();
  *    allowing for pure JSON exchanges.
  */
 export async function POST(
-  request: Request,
+  request: NextRequest,
 ): Promise<NextResponse<UpsertImagesSuccessResponseObject> | NextResponse<UpsertImagesErrorResponseObject>> {
   const contentType = request.headers.get('content-type');
   if (contentType == null) {
