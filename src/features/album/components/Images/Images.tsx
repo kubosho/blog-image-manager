@@ -7,6 +7,7 @@ import { useIntersectionObserver } from '../../../../hooks/use-intersection-obse
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../../auth/session-expired-time';
 import { getImagesSuccessResponseSchema } from '../../utils/get-images-schema';
 import { imagesQueryKey } from '../../utils/images-query-key';
+import { TrashButton } from '../TrashButton';
 
 type Props = {
   imageUrls: string[];
@@ -110,7 +111,7 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
       </p>
       <ul className="grid grid-cols-4 gap-6">
         {imageData.map(({ name, url }, index) => (
-          <li key={index}>
+          <li key={index} className="grid gap-0 min-w-50">
             <img
               src={url}
               alt=""
@@ -118,7 +119,12 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
               height="300"
               className="object-contain justify-self-center h-75 shadow-md"
             />
-            <p className="mt-1">{name}</p>
+            <div className="grid grid-rows-subgrid gap-2 row-span-2">
+              <p>{name}</p>
+              <div className='flex justify-end'>
+                <TrashButton filename={name} />
+              </div>
+            </div>
           </li>
         ))}
       </ul>
