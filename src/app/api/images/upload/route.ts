@@ -44,8 +44,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<UpsertIma
 
   imageData.set(request, new Uint8Array(buffer));
 
-  const { searchParams } = new URL(request.url);
-  const specifiedFilename = searchParams.get('filename');
+  const specifiedFilename = request.nextUrl.searchParams.get('filename');
   const imageFormat = contentType.split('/')[1];
   const filename = specifiedFilename ?? `${crypto.randomUUID()}.${imageFormat}`;
 
