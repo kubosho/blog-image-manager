@@ -16,7 +16,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ message: result.message }, { status: 500 });
     }
 
-    return NextResponse.json({}, { status: 204 });
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ message: `Delete failed: ${error.message}` }, { status: 500 });
