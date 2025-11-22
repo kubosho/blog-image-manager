@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import type { GetImagesResponseObject } from '../../../features/album/types/get-images';
 import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../../features/auth/session-expired-time';
@@ -6,9 +6,9 @@ import { fetchImageUrls } from '../../../features/bucket/image-url-fetcher';
 
 const DEFAULT_LIMIT = 20 as const;
 
-export async function GET(request: NextRequest): Promise<NextResponse<GetImagesResponseObject>> {
+export async function GET(request: Request): Promise<NextResponse<GetImagesResponseObject>> {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = new URL(request.url);
 
     const limit = Number(searchParams.get('limit')) || DEFAULT_LIMIT;
     if (limit <= 0 || limit > 100) {

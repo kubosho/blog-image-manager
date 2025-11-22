@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import type { UpsertImagesResponseObject } from '../../../../features/album/types/upsert-images';
 import { objectActions } from '../../../../features/bucket/object-actions';
@@ -13,7 +13,7 @@ const imageData = new WeakMap<Request, Uint8Array>();
  * A. We avoid FormData to prevent forcing the client to generate it,
  *    allowing for pure JSON exchanges.
  */
-export async function POST(request: NextRequest): Promise<NextResponse<UpsertImagesResponseObject>> {
+export async function POST(request: Request): Promise<NextResponse<UpsertImagesResponseObject>> {
   const contentType = request.headers.get('content-type');
   if (contentType == null) {
     return NextResponse.json(
@@ -44,7 +44,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<UpsertIma
 
   imageData.set(request, new Uint8Array(buffer));
 
-  const specifiedFilename = request.nextUrl.searchParams.get('filename');
+  const { searchParams } = new URL(request.url);
+  const specifiedFilename = searchParams.get('filename');
   const imageFormat = contentType.split('/')[1];
   const filename = specifiedFilename ?? `${crypto.randomUUID()}.${imageFormat}`;
 
