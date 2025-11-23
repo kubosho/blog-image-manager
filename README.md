@@ -6,56 +6,38 @@ Blog image manager for <https://blog.kubosho.com>.
 
 ### Environment Variables
 
-To develop locally, create a `.env` file by copying `.env.template`:
+This project uses [dotenvx](https://dotenvx.com/) to manage encrypted environment variables. The `.env` file is encrypted and committed to the repository.
+
+To run the application, you need the decryption key.
+
+1. Obtain the `DOTENV_PRIVATE_KEY` from the project administrator.
+2. Create a `.env.keys` file in the root directory, and add the key to the file:
 
 ```bash
-cp .env.template .env
-```
-
-Then update each environment variable with your AWS credentials and configuration:
-
-```bash
-# Examples
-
-## AWS Configuration
-AWS_ACCESS_KEY_ID="AKIXXXXXXXXXXXX"
-AWS_SECRET_ACCESS_KEY="XXXXXXXXXXXX"
-
-## AWS S3 Configuration
-AWS_S3_BUCKET_NAME="example-bucket-name"
-AWS_S3_HOST_NAME="s3.amazonaws.com"
-AWS_S3_REGION_NAME="ap-northeast-1"
-
-## AWS CloudFront Configuration
-AWS_CLOUD_FRONT_HOST_NAME="xxxxxxxxxxxx.cloudfront.net"
-
-## Google OAuth Configuration
-AUTH_GOOGLE_ID="000000000000-xxxxxxxxxxxx.apps.googleusercontent.com"
-AUTH_GOOGLE_SECRET="GOCSPX-xxxxxxxxxxxx"
-AUTH_SECRET="XXXXXXXXXXXX"
+DOTENV_PRIVATE_KEY="your_private_key_here"
 ```
 
 ## Development
 
-Launch development server:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Execute build:
+Build the application:
 
 ```bash
 npm run build
 ```
 
-Run lint:
+Lint the codes:
 
 ```bash
 npm run lint
 ```
 
-Run test runner:
+Run tests:
 
 ```bash
 npm run test

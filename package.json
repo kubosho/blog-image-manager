@@ -4,15 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "PORT=45537 next dev",
-    "build": "next build",
+    "dev": "PORT=45537 dotenvx run -- next dev",
+    "build": "dotenvx run -- next build",
     "format": "prettier --write .",
-    "start": "PORT=45537 next start",
+    "start": "PORT=45537 dotenvx run -- next start",
     "lint": "run-p lint:eslint lint:secretlint",
     "lint:eslint": "eslint .",
     "lint:secretlint": "secretlint '**/*'",
-    "test": "jest",
-    "storybook": "storybook dev -p 45538"
+    "test": "dotenvx run -- jest",
+    "storybook": "dotenvx run -- storybook dev -p 45538"
   },
   "dependencies": {
     "@ark-ui/react": "5.27.1",
@@ -22,8 +22,8 @@
     "@aws-sdk/protocol-http": "3.370.0",
     "@aws-sdk/s3-request-presigner": "3.922.0",
     "@aws-sdk/url-parser": "3.370.0",
+    "@dotenvx/dotenvx": "1.51.1",
     "@tanstack/react-query": "5.90.7",
-    "dotenv": "16.0.1",
     "next": "16.0.1",
     "next-auth": "5.0.0-beta.30",
     "react": "19.2.0",

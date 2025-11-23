@@ -6,6 +6,9 @@
 .next
 out
 
+# Dotenv private keys file
+.env.keys
+
 # ----------------------------
 # General
 # ----------------------------
