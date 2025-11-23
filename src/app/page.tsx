@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 import { Error } from '../components/Error';
 import { SiteHeader } from '../components/SiteHeader';
-import { ERROR_REASON, ErrorReason } from '../constants/error_reason';
+import { ERROR_REASON, ErrorReason } from '../constants/error-reason';
 import { Images } from '../features/album/components/Images';
 import { ImageUploadButton } from '../features/album/components/ImageUploadButton';
 import { auth } from '../features/auth/auth';

@@ -1,5 +1,5 @@
 import preview from '../../../.storybook/preview';
-import { ERROR_REASON } from '../../constants/error_reason';
+import { ERROR_REASON } from '../../constants/error-reason';
 import { Error } from '../Error';
 
 const meta = preview.meta({

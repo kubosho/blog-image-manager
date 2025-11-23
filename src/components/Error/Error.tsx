@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { ERROR_REASON, ErrorReason } from '../../constants/error_reason';
+import { ERROR_REASON, ErrorReason } from '../../constants/error-reason';
 import { SiteHeader } from '../SiteHeader';
 
 type Props = {

@@ -1,4 +1,4 @@
-import { ERROR_REASON } from '../../constants/error_reason';
+import { ERROR_REASON } from '../../constants/error-reason';
 
 const AWS_ENV_KEYS = [
   'AWS_ACCESS_KEY_ID',
