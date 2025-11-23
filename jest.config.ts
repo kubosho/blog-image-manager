@@ -6,6 +6,14 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
   clearMocks: true,
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/app/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.{js,jsx,ts,tsx}',
+    '!**/node_modules/**',
+  ],
+  coverageProvider: 'v8',
   testEnvironment: 'jest-environment-jsdom',
 };
 
