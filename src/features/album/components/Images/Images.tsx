@@ -115,7 +115,7 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
           <li key={index} className={styles.imageItem}>
             <button type="button" className={styles.imageAction}>
               <img src={url} alt="" width="auto" height="300" className={styles.image} />
-              <span className="sr-only">Action for {name}</span>
+              <span className="sr-only">Show actions for {name}</span>
             </button>
             <div className={styles.imageContextPanel}>
               <div className={styles.imageMeta}>
