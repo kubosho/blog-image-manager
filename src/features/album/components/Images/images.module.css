@@ -1,0 +1,60 @@
+.imageItems {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 2);
+}
+
+.imageItem {
+  position: relative;
+  height: calc(var(--spacing) * 75);
+  min-width: calc(var(--spacing) * 50);
+  border: 1px solid var(--color-beige-300);
+}
+
+.imageItem:hover .imageContextPanel,
+.imageItem:focus-within .imageContextPanel {
+  content-visibility: visible;
+  opacity: 1;
+}
+
+.imageAction {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageContextPanel {
+  display: grid;
+  content-visibility: hidden;
+  grid-template-rows: auto 1fr;
+  flex-direction: row-reverse;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: calc(var(--spacing) * 4);
+  background-color: rgb(0 37 60 / 80%);
+  backdrop-filter: blur(8px);
+  filter: var(--filter-glass);
+  transition: opacity 0.25s ease-in-out;
+  opacity: 0;
+}
+
+.imageMeta {
+  align-self: end;
+  justify-self: end;
+  grid-row: 2;
+  color: var(--color-monotone-100);
+  font-weight: bold;
+}
+
+.imageControls {
+  display: flex;
+  justify-content: flex-end;
+  grid-row: 1;
+}

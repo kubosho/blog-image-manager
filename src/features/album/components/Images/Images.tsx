@@ -8,6 +8,7 @@ import { SESSION_EXPIRED_TIME_IN_SECONDS } from '../../../auth/session-expired-t
 import { getImagesSuccessResponseSchema } from '../../utils/get-images-schema';
 import { imagesQueryKey } from '../../utils/images-query-key';
 import { TrashButton } from '../TrashButton';
+import styles from './images.module.css';
 
 type Props = {
   imageUrls: string[];
@@ -109,19 +110,18 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
       <p className="sr-only" aria-live="polite">
         {isFetching ? 'Loading images...' : `${fetchedImagesCountRef.current} images loaded.`}
       </p>
-      <ul className="grid grid-cols-4 gap-6">
+      <ul className={styles.imageItems}>
         {imageData.map(({ name, url }, index) => (
-          <li key={index} className="grid gap-0 min-w-50">
-            <img
-              src={url}
-              alt=""
-              width="auto"
-              height="300"
-              className="object-contain justify-self-center h-75 shadow-md"
-            />
-            <div className="grid grid-rows-subgrid gap-2 row-span-2">
-              <p>{name}</p>
-              <div className='flex justify-end'>
+          <li key={index} className={styles.imageItem}>
+            <button type="button" className={styles.imageAction}>
+              <img src={url} alt="" width="auto" height="300" className={styles.image} />
+              <span className="sr-only">Action for {name}</span>
+            </button>
+            <div className={styles.imageContextPanel}>
+              <div className={styles.imageMeta}>
+                <p>{name}</p>
+              </div>
+              <div className={styles.imageControls}>
                 <TrashButton filename={name} />
               </div>
             </div>

@@ -50,11 +50,10 @@ export function TrashButton({ filename, className }: Props): React.JSX.Element {
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center gap-1 px-4 py-2 rounded-2 shadow-md bg-blue-600 text-monotone-100 ${className}`}
+      className={`inline-flex items-center justify-center p-2 rounded-2 shadow-md bg-blue-600 text-monotone-100 ${className}`}
       onClick={handleDeleteImage}
     >
-      <Image src="/images/icons/trash.svg" alt="" width={14} height={16} />
-      Trash
+      <Image src="/images/icons/trash.svg" alt="Trash" width={16} height={16} />
     </button>
   );
 }
