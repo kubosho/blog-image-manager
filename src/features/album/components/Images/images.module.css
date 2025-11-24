@@ -33,16 +33,19 @@
   display: grid;
   content-visibility: hidden;
   grid-template-rows: auto 1fr;
-  flex-direction: row-reverse;
   position: absolute;
   inset: 0;
-  z-index: 10;
   padding: calc(var(--spacing) * 4);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.imageContextPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background-color: rgb(0 37 60 / 80%);
   backdrop-filter: blur(8px);
-  filter: var(--filter-glass);
-  transition: opacity 0.25s ease-in-out;
-  opacity: 0;
 }
 
 .imageMeta {
@@ -51,10 +54,12 @@
   grid-row: 2;
   color: var(--color-monotone-100);
   font-weight: bold;
+  z-index: 1;
 }
 
 .imageControls {
   display: flex;
   justify-content: flex-end;
   grid-row: 1;
+  z-index: 1;
 }
