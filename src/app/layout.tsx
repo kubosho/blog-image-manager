@@ -1,6 +1,6 @@
 import './globals.css';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 type Props = {
   children: React.ReactNode;
@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     address: false,
   },
 };
+
+export const viewport: Viewport = {
+  themeColor: "#003760",
+}
 
 export default function RootLayout({ children }: Props): React.JSX.Element {
   return (
