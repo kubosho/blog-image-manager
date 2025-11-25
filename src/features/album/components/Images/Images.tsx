@@ -1,6 +1,7 @@
 'use client';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 
 import { useIntersectionObserver } from '../../../../hooks/use-intersection-observer';
@@ -42,6 +43,11 @@ async function fetchImages(params: {
     nextToken: result.data.nextToken,
   };
 }
+
+const ImagesLoadingAnnouncer = dynamic(
+  () => import('../ImagesLoadingAnnouncer').then(({ ImagesLoadingAnnouncer }) => ImagesLoadingAnnouncer),
+  { ssr: false },
+);
 
 export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React.JSX.Element {
   const previousImagesCountRef = useRef(0);
@@ -107,9 +113,7 @@ export function Images({ imageUrls: initialImageUrls, nextToken }: Props): React
 
   return (
     <div>
-      <p className="sr-only" aria-live="polite">
-        {isFetching ? 'Loading images...' : `${fetchedImagesCountRef.current} images loaded.`}
-      </p>
+      <ImagesLoadingAnnouncer isFetching={isFetching} fetchedImagesCount={fetchedImagesCountRef.current} />
       <ul className={styles.imageItems}>
         {imageData.map(({ name, url }, index) => (
           <li key={index} className={styles.imageItem}>

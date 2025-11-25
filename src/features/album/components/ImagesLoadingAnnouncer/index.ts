@@ -1,0 +1,1 @@
+export { ImagesLoadingAnnouncer } from './ImagesLoadingAnnouncer';
