@@ -6,8 +6,8 @@ describe('S3 Client Instance', () => {
   beforeEach(() => {
     jest.resetModules();
     process.env = { ...ORIGINAL_ENV };
-    process.env.AWS_ACCESS_KEY_ID = 'test-access-key';
-    process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
+    process.env.AWS_ACCESS_KEY_ID_FOR_APP = 'test-access-key';
+    process.env.AWS_SECRET_ACCESS_KEY_FOR_APP = 'test-secret-key';
     process.env.AWS_S3_BUCKET_NAME = 'test-bucket';
   });
 

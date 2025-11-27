@@ -7,13 +7,13 @@ const REGION = 'ap-northeast-1' as const;
 let instance: S3Client | null = null;
 export const s3ClientInstance = (): S3Client => {
   if (instance == null) {
-    const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = getAwsEnv();
+    const { AWS_ACCESS_KEY_ID_FOR_APP, AWS_SECRET_ACCESS_KEY_FOR_APP } = getAwsEnv();
 
     instance = new S3Client({
       region: REGION,
       credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
+        accessKeyId: AWS_ACCESS_KEY_ID_FOR_APP,
+        secretAccessKey: AWS_SECRET_ACCESS_KEY_FOR_APP,
       },
     });
   }
