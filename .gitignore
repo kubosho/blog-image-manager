@@ -6,8 +6,19 @@
 .next
 out
 
+# Direnv configuration
+.envrc
+
 # Dotenv private keys file
 .env.keys
+.env.admin
+
+# Terraform files and directories
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
 
 # ----------------------------
 # General
