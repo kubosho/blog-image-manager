@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "PORT=45537 dotenvx run -- next dev",
+    "dev": "dotenvx run -- next dev",
     "build": "dotenvx run -- next build",
     "format": "prettier --write .",
-    "start": "PORT=45537 dotenvx run -- next start",
+    "start": "dotenvx run -- next start",
     "lint": "run-p lint:eslint lint:secretlint",
     "lint:eslint": "eslint .",
     "lint:secretlint": "secretlint '**/*'",
