@@ -1,6 +1,6 @@
 import { ERROR_REASON } from '../../constants/error-reason';
 
-const AWS_ENV_KEYS = ['AWS_ACCESS_KEY_ID_FOR_APP', 'AWS_SECRET_ACCESS_KEY_FOR_APP', 'AWS_S3_BUCKET_NAME'] as const;
+const AWS_ENV_KEYS = ['AWS_S3_BUCKET_NAME', 'COGNITO_IDENTITY_POOL_ID'] as const;
 
 export type AwsEnv = Record<(typeof AWS_ENV_KEYS)[number], string>;
 
