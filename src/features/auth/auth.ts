@@ -34,6 +34,12 @@ const allowedEmails = process.env.ALLOWED_EMAILS?.split(',').map((email) => emai
 const config = {
   providers: [
     Cognito({
+      authorization: {
+        params: {
+          identity_provider: 'Google',
+          scope: 'email openid',
+        },
+      },
       /**
        * "nonce" check is required, because Cognito always returns a nonce in the ID token.
        * If this check is missing, NextAuth throws a "CallbackRouteError" (unexpected ID Token "nonce" claim value)
