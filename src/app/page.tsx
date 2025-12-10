@@ -37,7 +37,7 @@ const errorMessages: Record<string, string> = {
 };
 
 export const metadata: Metadata = {
-  title: 'Blog image manager',
+  title: 'omoikane',
 };
 
 async function getContents(): Promise<Contents> {
