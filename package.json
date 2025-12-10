@@ -1,5 +1,5 @@
 {
-  "name": "s3-image-uploader",
+  "name": "@kubosho/omoikane",
   "license": "MIT",
   "private": true,
   "type": "module",

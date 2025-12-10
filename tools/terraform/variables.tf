@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Name of the project"
   type        = string
-  default     = "blog-image-manager"
+  default     = "omoikane"
 }
 
 variable "s3_bucket_name" {

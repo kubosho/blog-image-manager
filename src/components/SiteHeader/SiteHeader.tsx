@@ -13,7 +13,7 @@ export const SiteHeader = async (): Promise<React.JSX.Element> => {
       <h1 className="text-2xl">
         <Link href="/" className="inline-flex items-center gap-2 text-monotone-100">
           <Image src="/images/icons/learn.svg" alt="" width={32} height={24} />
-          Blog image manager
+          omoikane
         </Link>
       </h1>
       {session?.user != null ? <SignOutButton /> : <SignInButton />}

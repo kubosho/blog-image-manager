@@ -1,6 +1,6 @@
-# Blog image manager
+# omoikane (思金)
 
-Blog image manager for <https://blog.kubosho.com>.
+Blog image management tool for <https://blog.kubosho.com>.
 
 ## Setup
 
