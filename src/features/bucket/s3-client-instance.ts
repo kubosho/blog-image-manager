@@ -27,13 +27,18 @@ export async function getS3Client(): Promise<S3Client> {
     throw new Error('COGNITO_IDENTITY_POOL_ID environment variable is not set');
   }
 
-  const providerName = `cognito-idp.${process.env.AWS_REGION_NAME}.amazonaws.com/${userPoolId}`;
+  const region = process.env.AWS_REGION_NAME;
+  if (region == null || region === '') {
+    throw new Error('AWS_REGION_NAME environment variable is not set');
+  }
+
+  const providerName = `cognito-idp.${region}.amazonaws.com/${userPoolId}`;
 
   return new S3Client({
-    region: process.env.AWS_REGION_NAME,
+    region,
     credentials: fromCognitoIdentityPool({
       identityPoolId,
-      clientConfig: { region: process.env.AWS_REGION_NAME },
+      clientConfig: { region },
       logins: {
         [providerName]: session.idToken,
       },
